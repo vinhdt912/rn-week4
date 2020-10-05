@@ -7,7 +7,7 @@ import {
   TextInput,
   ScrollView,
   ImageBackground,
-  Dimensions,
+  Alert,
 } from "react-native";
 
 const activities = [
@@ -39,16 +39,24 @@ const activities = [
   {
     id: 6,
     content: "Go out for walk",
-    done: true,
+    done: false,
   },
   {
     id: 7,
     content: "Codingggggggg",
-    done: true,
+    done: false,
+  },
+  {
+    id: 8,
+    content: "Auzeeeeeeeeeee",
+    done: false,
+  },
+  {
+    id: 9,
+    content: "Gamingggggggggggg",
+    done: false,
   },
 ];
-
-const height = Dimensions.get("window").height;
 
 const AllScreen = ({ navigation }) => {
   const [todoList, setTodoList] = useState(Array.from(activities));
@@ -64,6 +72,37 @@ const AllScreen = ({ navigation }) => {
     const newTodoList = [...todoList, newTodo];
     setTodoList(newTodoList);
     setContent("");
+  };
+
+  const deleteAction = (id) => {
+    const newTodoList = [];
+    todoList.map((item) => {
+      if (item.id !== id) {
+        item.id = item.id > id ? --item.id : item.id;
+        newTodoList.push(item);
+      }
+    });
+    setTodoList(newTodoList);
+  };
+
+  const createTwoButtonAlert = (item) => {
+    Alert.alert(
+      "Alert Title",
+      "My Alert Msg",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => {
+            deleteAction(item.id);
+          },
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
   const onClicked = (id) => {
@@ -95,6 +134,9 @@ const AllScreen = ({ navigation }) => {
                 navigation.navigate("Detail", item);
               }}
               key={item.id}
+              onLongPress={() => {
+                createTwoButtonAlert(item);
+              }}
             >
               <Text style={styles.todoText}>
                 {item.id}. {item.content}
@@ -128,7 +170,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    height: 0.9 * height,
   },
   titleText: {
     fontSize: 30,
